@@ -29,7 +29,8 @@ export class TransactionList {
 
     fromJSON (data : string) {
         var items = JSON.parse(data);
-        for (var i = 0; i < item.length; i++) {
+        this.transactions = [];
+        for (var i = 0; i < items.length; i++) {
             var item = items[i];
             this.transactions.push(new Transaction(item.Date, item.FromAccount, item.ToAccount, item.Narrative, item.Amount));
         }
