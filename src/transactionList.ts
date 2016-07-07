@@ -1,5 +1,6 @@
 import { Transaction } from "./transaction";
 import fs = require("fs");
+import cheerio = require("cheerio");
 
 export class TransactionList {
     private transactions : Transaction[];
@@ -11,6 +12,11 @@ export class TransactionList {
             this.fromCSV(data);
         } else if (extension == "json") {
             this.fromJSON(data);
+        } else if (extension == "xml") {
+            this.fromXML(data);
+        } else {
+            this.transactions = [];
+            console.log("Unknown file extension: " + extension);
         }
     }
 
@@ -36,6 +42,21 @@ export class TransactionList {
         }
     }
 
+    fromXML (data : string) {
+        var $ = cheerio.load(data);
+        var children = $("TransactionList").children();
+        this.transactions = [];
+        for (var i = 0; i < children.length; i++) {
+            var child = $(children[i]);
+            var date = child.attr("date");
+            var narrative = child.find("description").text();
+            var from = child.find("From").text();
+            var to = child.find("To").text();
+            var amount = +child.find("Value").text();
+            this.transactions.push(new Transaction(date, from, to, narrative, amount));
+        }
+    }
+
     public outputTotals() {
         var map : { [key : string] : number } = {};
         for (var i=0; i < this.transactions.length; i++) {
@@ -51,7 +72,7 @@ export class TransactionList {
             } else if (map[name] > 0) {
                 console.log(`${name} is owed £${map[name].toPrecision(4)} more than he/she owes`);
             } else {
-                console.log(`${name} owes £${map[name].toPrecision(4)} more than he/she is owed`);
+                console.log(`${name} owes £${(-map[name]).toPrecision(4)} more than he/she is owed`);
             }
         }
     }
