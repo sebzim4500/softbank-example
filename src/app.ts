@@ -6,7 +6,7 @@ import { Transaction } from "./Transaction";
 import { TransactionList } from "./TransactionList";
 
 var rl = readline.createInterface(process.stdin, process.stdout);
-var fileName = "data/DodgyTransactions2015.csv";
+var fileName = process.argv[2] || "data/Transactions2014.csv";
 var transactions = new TransactionList(fileName);
 
 console.log("working");
