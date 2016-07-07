@@ -15,7 +15,11 @@ export class Transaction {
     }
 
     public output() {
-        console.log(`On ${dateToString(this.date)}, ${this.from} promised to pay £${this.amount} to ${this.to}, for ${this.narrative}.`);
+        if (isNaN(this.date.getTime())) {
+            console.log(`At an unknown time, ${this.from} promised to pay £${this.amount} to ${this.to}, for ${this.narrative}.`);
+        } else {
+            console.log(`On ${dateToString(this.date)}, ${this.from} promised to pay £${this.amount} to ${this.to}, for ${this.narrative}.`);
+        }
     }
 }
 
