@@ -1,12 +1,12 @@
 
 export class Transaction {
-    public date : string;
+    public date : Date;
     public from : string;
     public to : string;
     public amount : number;
     public narrative : string;
 
-    constructor (date : string, from : string, to : string, narrative : string, amount : number) {
+    constructor (date : Date, from : string, to : string, narrative : string, amount : number) {
         this.date = date;
         this.from = from;
         this.to = to;
@@ -15,6 +15,10 @@ export class Transaction {
     }
 
     public output() {
-        console.log(`On ${this.date}, ${this.from} promised to pay £${this.amount} to ${this.to}, for ${this.narrative}.`);
+        console.log(`On ${dateToString(this.date)}, ${this.from} promised to pay £${this.amount} to ${this.to}, for ${this.narrative}.`);
     }
+}
+
+function dateToString(date : Date) : string {
+    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
 }

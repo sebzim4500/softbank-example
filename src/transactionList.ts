@@ -28,7 +28,8 @@ export class TransactionList {
             if (line == "") {
                 continue;
             }
-            var [date, from, to, narrative, amount] = line.split(",");
+            var [date_str, from, to, narrative, amount] = line.split(",");
+            var date = getDateForCSV(date_str);
             this.transactions.push(new Transaction(date, from, to, narrative, +amount));
         }
     }
@@ -38,7 +39,7 @@ export class TransactionList {
         this.transactions = [];
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            this.transactions.push(new Transaction(item.Date, item.FromAccount, item.ToAccount, item.Narrative, item.Amount));
+            this.transactions.push(new Transaction(new Date(item.Date), item.FromAccount, item.ToAccount, item.Narrative, item.Amount));
         }
     }
 
@@ -53,7 +54,7 @@ export class TransactionList {
             var from = child.find("From").text();
             var to = child.find("To").text();
             var amount = +child.find("Value").text();
-            this.transactions.push(new Transaction(date, from, to, narrative, amount));
+            this.transactions.push(new Transaction(getDateForXML(date), from, to, narrative, amount));
         }
     }
 
@@ -85,4 +86,14 @@ export class TransactionList {
             }
         }
     }
+}
+
+function getDateForCSV(str : string) : Date {
+    var [day, month, year] = str.split("/");
+    return new Date(+year, +month-1, +day);
+}
+
+function getDateForXML(str : string) : Date {
+    var epoch = new Date("1900-01-01").getTime();
+    return new Date(epoch + ((+str) * 60 * 60 * 24 * 1000));
 }
